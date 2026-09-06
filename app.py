@@ -3,16 +3,14 @@ from streamlit_gsheets import GSheetsConnection
 
 st.title("🚀 Meu App Conectado ao Google Sheets!")
 
-# A conexão agora não precisa de código complexo, ela puxa do cofre sozinha!
+# Cria a conexão puxando as senhas do cofre
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 # COLE O LINK DA SUA PLANILHA AQUI DENTRO DAS ASPAS
-URL_PLANILHA = "https://docs.google.com/spreadsheets/d/1rkpKc13ezgVPHM7CJYmFsO10EP_dqXO4Pkf6AYPrnqU/edit?usp=sharing"
+URL_PLANILHA = "COLE_AQUI_O_LINK_DA_SUA_PLANILHA"
 
-# Lê os dados da planilha e mostra na tela (lembre-se de mudar 'Dados' se o nome da sua aba for outro)
-try:
-    df = conn.read(spreadsheet=URL_PLANILHA, worksheet="base")
-    st.success("Conexão feita com sucesso! Abaixo estão seus dados:")
-    st.dataframe(df)
-except Exception as e:
-    st.error(f"Erro ao ler a planilha: {e}")
+# Lê a planilha forçando a atualização na mesma hora (ttl=0)
+df = conn.read(spreadsheet=URL_PLANILHA, ttl=0)
+
+st.success("Conexão feita com sucesso! Abaixo estão seus dados:")
+st.dataframe(df)
