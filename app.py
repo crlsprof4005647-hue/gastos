@@ -1,27 +1,20 @@
 import streamlit as st
+import json
+from streamlit_gsheets import GSheetsConnection
 
-# 1. CONFIGURAÇÃO BÁSICA
-st.set_page_config(page_title="Meu Novo App", layout="wide")
+st.title("🚀 Meu App Conectado ao Google Sheets!")
 
-# 2. O VISUAL (LAYOUT E CORES)
-# Aqui você define o fundo, a cor do texto e dos botões
-st.markdown("""
-    <style>
-    .stApp { background-color: #F0F2F6; } /* Cor do fundo */
-    h1 { color: #2C3E50; } /* Cor do título principal */
-    .stButton > button { 
-        background-color: #3498DB !important; 
-        color: white !important; 
-        border-radius: 8px; 
-    }
-    </style>
-""", unsafe_allow_html=True)
+# 1. Ele pega o texto lá do cofre (Secrets) e transforma em dados
+credenciais = json.loads(st.secrets["google_json"])
 
-# 3. O CONTEÚDO DA TELA
-st.title("🚀 Bem-vindo ao Meu Novo Aplicativo")
-st.write("Este é o começo de um grande projeto.")
+# 2. Inicia a conexão segura usando o robô
+conn = st.connection("gsheets", type=GSheetsConnection, service_account_info=credenciais)
 
-# Exemplo de um campo de digitação e um botão
-nome = st.text_input("Qual é o seu nome?")
-if st.button("Enviar"):
-    st.success(f"Olá, {nome}! Seu aplicativo está funcionando perfeitamente.")
+# COLE O LINK DA SUA PLANILHA AQUI DENTRO DAS ASPAS:
+URL_PLANILHA = "COLE_AQUI_O_LINK_DA_SUA_PLANILHA"
+
+# 3. Lê os dados da planilha e mostra na tela
+df = conn.read(spreadsheet=URL_PLANILHA, worksheet="Página1")
+
+st.write("Abaixo estão os dados da sua planilha:")
+st.dataframe(df)
